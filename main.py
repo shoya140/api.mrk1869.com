@@ -10,7 +10,7 @@ define("debug", default=0, help="1:watch in real time (debug mode)", type=bool)
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
-        print "Hello, World"
+        self.write("Hello, World")
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()
