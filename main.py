@@ -31,8 +31,9 @@ class MensaHandler(tornado.web.RequestHandler):
         db = self.application.db
         d = datetime.datetime.today()
         item = db.mensa.menu.find_one({"date":str(d.day)+"."+str(d.month)+"."+str(d.year)})
-        del item["_id"]
-        self.write(json.dumps(item))
+        if item:
+            del item["_id"]
+            self.write(json.dumps(item))
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()
