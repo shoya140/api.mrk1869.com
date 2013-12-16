@@ -5,6 +5,7 @@ import tornado.options
 import tornado.web
 import pymongo
 import json
+import datetime
 
 from tornado.options import define, options
 define("port", default=6010, help="run on the given port", type=int)
@@ -28,7 +29,8 @@ class IndexHandler(tornado.web.RequestHandler):
 class MensaHandler(tornado.web.RequestHandler):
     def get(self):
         db = self.application.db
-        item = db.mensa.menu.find_one({"date":"13.12.2013"})
+        d = datetime.datetime.today()
+        item = db.mensa.menu.find_one({"date":str(d.day)+"."+str(d.month)+"."+str(d.year)})
         del item["_id"]
         self.write(json.dumps(item))
 
