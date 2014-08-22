@@ -1,13 +1,12 @@
 import os.path
+import pymongo
+import datetime
 import tornado.httpserver
 import tornado.ioloop
 import tornado.options
 import tornado.web
-import pymongo
-import json
-import datetime
-
 from tornado.options import define, options
+
 define("port", default=6010, help="run on the given port", type=int)
 define("debug", default=0, help="1:watch in real time (debug mode)", type=bool)
 
@@ -18,7 +17,7 @@ class Application(tornado.web.Application):
 
         handlers=[
             (r'/', IndexHandler),
-            (r'/mensa/v1/today/', MensaHandler)
+            (r'/mensa/v1/today/?', MensaHandler)
             ]
         tornado.web.Application.__init__(self, handlers, debug=True)
 
@@ -33,7 +32,7 @@ class MensaHandler(tornado.web.RequestHandler):
         item = db.mensa.menu.find_one({"date":d.strftime("%d")+"."+d.strftime("%m")+"."+d.strftime("%Y")})
         if item:
             del item["_id"]
-            self.write(json.dumps(item))
+            self.write(item)
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()
