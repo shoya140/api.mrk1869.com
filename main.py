@@ -17,7 +17,7 @@ class Application(tornado.web.Application):
 
         handlers=[
             (r'/', IndexHandler),
-            (r'/mensa/v1/today/?', MensaHandler)
+            (r'/mensa/v1/?', MensaHandler)
             ]
         tornado.web.Application.__init__(self, handlers, debug=True)
 
@@ -27,9 +27,11 @@ class IndexHandler(tornado.web.RequestHandler):
 
 class MensaHandler(tornado.web.RequestHandler):
     def get(self):
-        db = self.application.db
         d = datetime.datetime.today()
-        item = db.mensa.menu.find_one({"date":d.strftime("%d")+"."+d.strftime("%m")+"."+d.strftime("%Y")})
+        date = d.strftime("%d")+"."+d.strftime("%m")+"."+d.strftime("%Y")
+        query_date = self.get_argument('date', date)
+        db = self.application.db
+        item = db.mensa.menu.find_one({"date":query_date})
         if item:
             del item["_id"]
             self.write(item)
